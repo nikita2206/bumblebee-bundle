@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="bumblebee.compiler.class">Bumblebee\Compiler</parameter>
+        <parameter key="bumblebee.transformer.class">Bumblebee\Transformer</parameter>
+        <parameter key="bumblebee.compiled_transformer.class">Bumblebee\Bundle\CompiledTransformer</parameter>
+        <parameter key="bumblebee.types_provider.class">Bumblebee\Bundle\TypeProvider</parameter>
+        <parameter key="bumblebee.caching_types_provider.class">Bumblebee\Bundle\CachingTypeProvider</parameter>
+        <parameter key="bumblebee.transformers.class">Bumblebee\Bundle\TransformerProvider</parameter>
+        <parameter key="bumblebee.configuration_compiler_factory.class">Bumblebee\Bundle\ConfigurationCompilerFactory</parameter>
+    </parameters>
+
+    <services>
+        <service id="bumblebee.configuration_compiler_factory" class="%bumblebee.configuration_compiler_factory.class%">
+            <argument /> <!-- $classMap is set in BumblebeeExtension -->
+        </service>
+
+        <service id="bumblebee.metadata_cache" synthetic="true" />
+
+        <service id="bumblebee.types_provider" class="%bumblebee.types_provider.class%">
+            <argument /> <!-- $resource - will be set in BumblebeeExtension -->
+            <argument type="service" id="bumblebee.configuration_compiler_factory" />
+        </service>
+
+        <service id="bumblebee.types" class="%bumblebee.caching_types_provider.class%">
+            <argument type="service" id="bumblebee.types_provider" />
+            <argument type="service" id="bumblebee.metadata_cache" />
+            <argument type="expression">%kernel.debug%</argument>
+        </service>
+
+        <service id="bumblebee.transformers" class="%bumblebee.transformers.class%">
+            <argument /> <!-- $classMap is set in BumblebeeExtension -->
+        </service>
+
+        <service id="bumblebee.transformer" class="%bumblebee.transformer.class%">
+            <argument type="service" id="bumblebee.types" />
+            <argument type="service" id="bumblebee.transformers" />
+        </service>
+
+        <service id="bumblebee.compiler" class="%bumblebee.compiler.class%">
+            <argument type="service" id="bumblebee.types" />
+            <argument type="service" id="bumblebee.transformers" />
+        </service>
+
+        <service id="bumblebee.compiled_transformer" class="%bumblebee.compiled_transformer.class%">
+            <argument type="service" id="bumblebee.compiler" />
+            <argument type="service" id="bumblebee.types" />
+            <argument type="service" id="bumblebee.transformers" />
+            <argument type="string">%kernel.cache_dir%</argument>
+            <argument type="expression">%kernel.debug%</argument>
+        </service>
+
+        <service id="bumblebee.cache_warmer" class="Bumblebee\Bundle\CacheWarmer">
+            <argument type="service" id="bumblebee.compiled_transformer" />
+            <argument type="service" id="bumblebee.types" />
+            <tag name="kernel.cache_warmer" />
+        </service>
+    </services>
+</container>
