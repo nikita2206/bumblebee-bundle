@@ -8,10 +8,11 @@
         <parameter key="bumblebee.compiler.class">Bumblebee\Compiler</parameter>
         <parameter key="bumblebee.transformer.class">Bumblebee\Transformer</parameter>
         <parameter key="bumblebee.compiled_transformer.class">Bumblebee\Bundle\CompiledTransformer</parameter>
-        <parameter key="bumblebee.types_provider.class">Bumblebee\Bundle\TypeProvider</parameter>
+        <parameter key="bumblebee.types_provider.class">Bumblebee\Bundle\ConfigurationTypeProvider</parameter>
         <parameter key="bumblebee.caching_types_provider.class">Bumblebee\Bundle\CachingTypeProvider</parameter>
         <parameter key="bumblebee.transformers.class">Bumblebee\Bundle\TransformerProvider</parameter>
         <parameter key="bumblebee.configuration_compiler_factory.class">Bumblebee\Bundle\ConfigurationCompilerFactory</parameter>
+        <parameter key="bumblebee.cache_warmer.class">Bumblebee\Bundle\CacheWarmer</parameter>
     </parameters>
 
     <services>
@@ -54,7 +55,7 @@
             <argument type="string">%kernel.debug%</argument>
         </service>
 
-        <service id="bumblebee.cache_warmer" class="Bumblebee\Bundle\CacheWarmer">
+        <service id="bumblebee.cache_warmer" class="%bumblebee.cache_warmer.class%">
             <argument type="service" id="bumblebee.compiled_transformer" />
             <argument type="service" id="bumblebee.types" />
             <tag name="kernel.cache_warmer" />

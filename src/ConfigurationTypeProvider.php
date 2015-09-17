@@ -9,7 +9,7 @@ use Bumblebee\TypeProvider as TypeProviderInterface;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser;
 
-class TypeProvider implements TypeProviderInterface
+class ConfigurationTypeProvider implements TypeProviderInterface
 {
     /**
      * @var string

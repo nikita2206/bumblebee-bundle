@@ -9,7 +9,7 @@ use Bumblebee\TypeProvider as TypeProviderInterface;
 class CachingTypeProvider implements TypeProviderInterface
 {
     /**
-     * @var TypeProvider
+     * @var ConfigurationTypeProvider
      */
     protected $typeProvider;
 
@@ -28,7 +28,7 @@ class CachingTypeProvider implements TypeProviderInterface
      */
     protected $loaded;
 
-    public function __construct(TypeProvider $typeProvider, Cache $cache, $debug)
+    public function __construct(ConfigurationTypeProvider $typeProvider, Cache $cache, $debug)
     {
         $this->typeProvider = $typeProvider;
         $this->cache = $cache;
