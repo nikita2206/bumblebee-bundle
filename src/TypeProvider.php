@@ -90,8 +90,8 @@ class TypeProvider implements TypeProviderInterface
         $files->enqueue($this->resource);
         $loaded = [];
 
-        while ($file = $files->dequeue()) {
-            $file = realpath($file);
+        while ( ! $files->isEmpty()) {
+            $file = realpath($files->dequeue());
 
             if (isset($loaded[$file])) {
                 throw new RuntimeException("File \"{$file}\" was requested to be loaded twice (it might be circular reference)");
@@ -116,23 +116,24 @@ class TypeProvider implements TypeProviderInterface
 
     protected function processLoadedResources(array $resources)
     {
-        $types = [];
+        $compiled = [];
+        $compiler = $this->configCompilerFactory->buildArrayCompiler();
 
         foreach ($resources as $fileName => $resource) {
             if (isset($resource["types"])) {
-                if ($intersected = array_intersect_key($types, $resource["types"])) {
+                $resourceCompiled = $compiler->compile($resource["types"]);
+
+                if ($intersected = array_intersect_key($resourceCompiled, $compiled)) {
                     $intersected = key($intersected);
                     throw new RuntimeException("Type \"{$intersected}\" is redefined in {$fileName}");
                 }
 
-                $types += $resource["types"];
-                $this->typeToFilename += array_fill_keys(array_keys($resource["types"]), $fileName);
+                $this->typeToFilename += array_fill_keys(array_keys($resourceCompiled), $fileName);
+                $compiled += $resourceCompiled;
             }
         }
 
-        $compiler = $this->configCompilerFactory->buildArrayCompiler();
-
-        return $compiler->compile($types);
+        return $compiled;
     }
 
     protected function loadResource(Parser $parser, $res)

@@ -43,12 +43,12 @@ class BumblebeeConfiguration implements ConfigurationInterface
                         ->thenInvalid("Caching type you used is not supported. The list of supported types is: " . implode(", ", $metadataCacheType))
                     ->end()
                 ->end()
-                ->booleanNode("compile")->default($this->isProd)->end()
-                ->arrayNode("custom_transformers")->default([])
+                ->booleanNode("compile")->defaultValue($this->isProd)->end()
+                ->arrayNode("custom_transformers")->defaultValue([])
                     ->prototype("scalar")
                     ->end()
                 ->end()
-                ->arrayNode("custom_configuration_compilers")->default([])
+                ->arrayNode("custom_configuration_compilers")->defaultValue([])
                     ->prototype("scalar");
 
         return $tb;

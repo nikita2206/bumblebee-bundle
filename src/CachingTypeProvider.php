@@ -50,16 +50,16 @@ class CachingTypeProvider implements TypeProviderInterface
         }
 
         if ( ! $this->debug) {
-            return $this->loaded[$type] = $metadata;
+            return $this->loaded[$type] = $metadata[0];
         }
 
-        $typeFilename = $this->cache->fetch("[filename]{$type}");
-        $time = $this->cache->fetch("[C]{$type}");
-        if ($typeFilename === false || $time === false || $time < filemtime($typeFilename)) {
+        $time = $metadata[1];
+        $typeFilename = $metadata[2];
+        if ($time < filemtime($typeFilename)) {
             goto miss;
         }
 
-        return $this->loaded[$type] = $metadata;
+        return $this->loaded[$type] = $metadata[0];
 
         miss:
         return $this->loaded[$type] = $this->reload($type);
@@ -86,12 +86,7 @@ class CachingTypeProvider implements TypeProviderInterface
     protected function reload($type)
     {
         $metadata = $this->typeProvider->get($type);
-
-        $this->cache->save($type, $metadata);
-        if ($this->debug) {
-            $this->cache->save("[C]{$type}", time());
-            $this->cache->save("[filename]{$type}", $this->typeProvider->getFilename($type));
-        }
+        $this->cache->save($type, [$metadata, time(), $this->typeProvider->getFilename($type)]);
 
         return $metadata;
     }

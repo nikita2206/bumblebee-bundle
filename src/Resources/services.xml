@@ -29,7 +29,7 @@
         <service id="bumblebee.types" class="%bumblebee.caching_types_provider.class%">
             <argument type="service" id="bumblebee.types_provider" />
             <argument type="service" id="bumblebee.metadata_cache" />
-            <argument type="expression">%kernel.debug%</argument>
+            <argument type="string">%kernel.debug%</argument>
         </service>
 
         <service id="bumblebee.transformers" class="%bumblebee.transformers.class%">
@@ -50,8 +50,8 @@
             <argument type="service" id="bumblebee.compiler" />
             <argument type="service" id="bumblebee.types" />
             <argument type="service" id="bumblebee.transformers" />
-            <argument type="string">%kernel.cache_dir%</argument>
-            <argument type="expression">%kernel.debug%</argument>
+            <argument type="string">%kernel.cache_dir%/bumblebee/compiled</argument>
+            <argument type="string">%kernel.debug%</argument>
         </service>
 
         <service id="bumblebee.cache_warmer" class="Bumblebee\Bundle\CacheWarmer">

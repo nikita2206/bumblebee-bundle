@@ -2,9 +2,10 @@
 
 namespace Bumblebee\Bundle;
 
+use Bumblebee\Bundle\Exception\RuntimeException;
 use Bumblebee\Compiler;
-use Bumblebee\TransformerProvider;
-use Bumblebee\TypeProvider;
+use Bumblebee\TransformerProvider as TransformerProviderInterface;
+use Bumblebee\TypeProvider as TypeProviderInterface;
 use Bumblebee\TypeTransformer\CompilableTypeTransformer;
 use Bumblebee\TransformerInterface;
 
@@ -16,12 +17,12 @@ class CompiledTransformer implements TransformerInterface
     protected $compiler;
 
     /**
-     * @var TypeProvider
+     * @var TypeProviderInterface
      */
     protected $types;
 
     /**
-     * @var TransformerProvider
+     * @var TransformerProviderInterface
      */
     protected $transformers;
 
@@ -47,13 +48,13 @@ class CompiledTransformer implements TransformerInterface
 
     /**
      * @param Compiler $compiler
-     * @param TypeProvider $types
-     * @param TransformerProvider $transformers
+     * @param TypeProviderInterface $types
+     * @param TransformerProviderInterface $transformers
      * @param string $baseDir
      * @param bool $debug
      */
-    public function __construct(Compiler $compiler, TypeProvider $types, TransformerProvider $transformers,
-        $baseDir, $debug)
+    public function __construct(Compiler $compiler, TypeProviderInterface $types,
+        TransformerProviderInterface $transformers, $baseDir, $debug)
     {
         $this->compiler = $compiler;
         $this->types = $types;
@@ -133,6 +134,14 @@ class CompiledTransformer implements TransformerInterface
     protected function doCompile($fileName, $type)
     {
         $code = $this->compiler->compile($type);
+        $dir  = dirname($fileName);
+
+        if (!file_exists($dir)) {
+            @mkdir($dir, 0777, true);
+        }
+        if (!is_dir($dir) || !is_writable($dir)) {
+            throw new RuntimeException("Cache directory {$dir} is not writable");
+        }
         file_put_contents($fileName, "<?php return {$code};\n");
 
         $func = eval("return {$code};");
