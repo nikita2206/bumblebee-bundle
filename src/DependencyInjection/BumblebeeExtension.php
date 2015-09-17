@@ -34,6 +34,14 @@ class BumblebeeExtension extends Extension
         }
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new BumblebeeConfiguration( ! $container->getParameter("kernel.debug"));
+    }
+
     protected function setupTypes($cacheConfig, ContainerBuilder $cnt)
     {
         $mdCacheType = $cacheConfig["type"];
