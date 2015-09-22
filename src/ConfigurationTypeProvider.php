@@ -123,9 +123,10 @@ class ConfigurationTypeProvider implements TypeProviderInterface
             if (isset($resource["types"])) {
                 $resourceCompiled = $compiler->compile($resource["types"]);
 
-                if ($intersected = array_intersect_key($resourceCompiled, $compiled)) {
-                    $intersected = key($intersected);
-                    throw new RuntimeException("Type \"{$intersected}\" is redefined in {$fileName}");
+                if ($redefinedType = array_intersect_key($resourceCompiled, $compiled)) {
+                    $redefinedType = key($redefinedType);
+                    throw new RuntimeException("Type \"{$redefinedType}\" is redefined in {$fileName}" .
+                        " previously defined in {$this->typeToFilename[$redefinedType]}");
                 }
 
                 $this->typeToFilename += array_fill_keys(array_keys($resourceCompiled), $fileName);
