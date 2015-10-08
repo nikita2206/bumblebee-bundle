@@ -113,7 +113,7 @@ class BumblebeeExtension extends Extension
 
                 $class = new \ReflectionClass($className);
 
-                if ($class->getConstructor()->getNumberOfRequiredParameters() > 0 || ! $class->getConstructor()->isPublic()) {
+                if ($class->getConstructor() && ($class->getConstructor()->getNumberOfRequiredParameters() > 0 || ! $class->getConstructor()->isPublic())) {
                     throw new RuntimeException("Class '{$className}' has private/protected constructor or its constructor has required arguments'");
                 }
             }
