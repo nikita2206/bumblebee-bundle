@@ -83,6 +83,10 @@ class CachingTypeProvider implements TypeProviderInterface
         }
     }
 
+    /**
+     * @param string $type
+     * @return TypeMetadata
+     */
     protected function reload($type)
     {
         $metadata = $this->typeProvider->get($type);

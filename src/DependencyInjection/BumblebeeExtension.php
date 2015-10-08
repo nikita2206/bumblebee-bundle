@@ -102,16 +102,22 @@ class BumblebeeExtension extends Extension
             "func"         => 'Bumblebee\Configuration\ArrayConfiguration\FunctionConfigurationCompiler'
         ];
 
-        if ($configCompilers) {
-            foreach ($configCompilers as $name => $className) {
+        if ($customCompilers) {
+            foreach ($customCompilers as $name => $className) {
                 if ( ! class_exists($className)) {
-                    throw new RuntimeException("Class '{$className}' was not found'");
+                    throw new RuntimeException("Configuration compile class '{$className}' was not found'");
                 }
                 if ( ! is_a($className, 'Bumblebee\Configuration\ArrayConfiguration\TransformerConfigurationCompiler', true)) {
                     throw new RuntimeException("Class '{$className}' does not implement " . 'Bumblebee\Configuration\ArrayConfiguration\TransformerConfigurationCompiler');
                 }
+
+                $class = new \ReflectionClass($className);
+
+                if ($class->getConstructor()->getNumberOfRequiredParameters() > 0 || ! $class->getConstructor()->isPublic()) {
+                    throw new RuntimeException("Class '{$className}' has private/protected constructor or its constructor has required arguments'");
+                }
             }
-            $configCompilers = $configCompilers + $configCompilers;
+            $configCompilers = $customCompilers + $configCompilers;
         }
         $cnt->getDefinition("bumblebee.configuration_compiler_factory")
             ->replaceArgument(0, $configCompilers);

@@ -2,6 +2,7 @@
 
 namespace Bumblebee\Bundle;
 
+use Bumblebee\Bundle\Exception\RuntimeException;
 use Bumblebee\TransformerProvider as TransformerProviderInterface;
 use Bumblebee\TypeTransformer\TypeTransformer;
 
@@ -38,7 +39,7 @@ class TransformerProvider implements TransformerProviderInterface
         }
 
         if ( ! isset($this->classMap[$transformer])) {
-            throw new \RuntimeException("There's no transformer '{$transformer}'");
+            throw new RuntimeException("There's no transformer '{$transformer}'");
         }
 
         $className = $this->classMap[$transformer];

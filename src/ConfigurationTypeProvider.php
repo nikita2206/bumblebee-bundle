@@ -2,6 +2,7 @@
 
 namespace Bumblebee\Bundle;
 
+use Bumblebee\Exception\ConfigurationCompilationException;
 use Bumblebee\Bundle\Exception\RuntimeException;
 use Bumblebee\Exception\InvalidTypeException;
 use Bumblebee\Metadata\TypeMetadata;
@@ -121,7 +122,11 @@ class ConfigurationTypeProvider implements TypeProviderInterface
 
         foreach ($resources as $fileName => $resource) {
             if (isset($resource["types"])) {
-                $resourceCompiled = $compiler->compile($resource["types"]);
+                try {
+                    $resourceCompiled = $compiler->compile($resource["types"]);
+                } catch (ConfigurationCompilationException $e) {
+                    throw new RuntimeException("Error occurred during compilation of {$fileName}: " . $e->getMessage(), 0, $e);
+                }
 
                 if ($redefinedType = array_intersect_key($resourceCompiled, $compiled)) {
                     $redefinedType = key($redefinedType);
