@@ -71,7 +71,8 @@ class BumblebeeExtension extends Extension
             "function"         => 'Bumblebee\TypeTransformer\FunctionTransformer',
             "number_format"    => 'Bumblebee\TypeTransformer\NumberFormatTransformer',
             "object_array"     => 'Bumblebee\TypeTransformer\ObjectArrayTransformer',
-            "typed_collection" => 'Bumblebee\TypeTransformer\TypedCollectionTransformer'
+            "typed_collection" => 'Bumblebee\TypeTransformer\TypedCollectionTransformer',
+            "array_pick"       => 'Bumblebee\TypeTransformer\ArrayPickTransformer'
         ];
 
         if ($customTransformers) {
@@ -97,7 +98,8 @@ class BumblebeeExtension extends Extension
             "collection"   => 'Bumblebee\Configuration\ArrayConfiguration\TypedCollectionConfigurationCompiler',
             "date_text"    => 'Bumblebee\Configuration\ArrayConfiguration\DateTimeConfigurationCompiler',
             "chain"        => 'Bumblebee\Configuration\ArrayConfiguration\ChainConfigurationCompiler',
-            "func"         => 'Bumblebee\Configuration\ArrayConfiguration\FunctionConfigurationCompiler'
+            "func"         => 'Bumblebee\Configuration\ArrayConfiguration\FunctionConfigurationCompiler',
+            "array_pick"   => 'Bumblebee\Configuration\ArrayConfiguration\ArrayPickConfigurationCompiler'
         ];
 
         if ($customCompilers) {
