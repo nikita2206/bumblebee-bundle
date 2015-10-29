@@ -64,8 +64,6 @@ class BumblebeeExtension extends Extension
 
     protected function setupTransformers($customTransformers, ContainerBuilder $cnt)
     {
-        // implement tagged transformers as services
-
         $transformers = [
             "array_to_object"  => 'Bumblebee\TypeTransformer\ArrayToObjectTransformer',
             "chain"            => 'Bumblebee\TypeTransformer\ChainTransformer',
