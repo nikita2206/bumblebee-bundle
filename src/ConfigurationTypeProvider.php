@@ -128,10 +128,15 @@ class ConfigurationTypeProvider implements TypeProviderInterface
                     throw new RuntimeException("Error occurred during compilation of {$fileName}: " . $e->getMessage(), 0, $e);
                 }
 
-                if ($redefinedType = array_intersect_key($resourceCompiled, $compiled)) {
-                    $redefinedType = key($redefinedType);
-                    throw new RuntimeException("Type \"{$redefinedType}\" is redefined in {$fileName}" .
-                        " previously defined in {$this->typeToFilename[$redefinedType]}");
+                if ($redefinedTypes = array_intersect_key($resourceCompiled, $compiled)) {
+                    foreach ($redefinedTypes as $typeName => $typeDefinition) {
+                        if ($compiled[$typeName] == $typeDefinition) {
+                            continue;
+                        }
+
+                        throw new RuntimeException("Type \"{$typeName}\" is redefined in {$fileName}" .
+                            " previously defined in {$this->typeToFilename[$typeName]}");
+                    }
                 }
 
                 $this->typeToFilename += array_fill_keys(array_keys($resourceCompiled), $fileName);
